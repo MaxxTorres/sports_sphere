@@ -11,10 +11,9 @@
 
     if(mysqli_num_rows($result)===1){
         $row = mysqli_fetch_assoc($result);
-        echo($row);
 
         if($row['User_username'] === $un && $row['User_password'] === $pass){
-            $_SESSION['User_id'] = $row['User_id'];
+            $_SESSION['User_ID'] = $row['User_ID'];
             header("Location: ../web/LeagueSelectPage.html");
             exit();
         }
