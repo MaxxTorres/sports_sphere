@@ -1,0 +1,70 @@
+body {
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.general_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    margin-top: 50px;
+    padding: 10px;
+    background: rgb(54, 54, 54);
+    border-radius: 5px;
+    color: white;
+}
+
+.button {
+    padding: 5px;
+    margin: 5px;
+    background: rgb(0, 187, 255);
+    border-style: none;
+    border-radius: 5px;
+}
+
+.title {
+    margin-bottom: 0;
+    color: orange;
+}
+
+#league_select_container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10px;
+    margin-top: 200px;
+    padding: 10px;
+    background: rgb(54, 54, 54);
+    border-radius: 5px;
+}
+
+#league_select_container a {
+    color: white;
+    text-decoration: none;
+}
+
+#side_bar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 200px;
+    height: 100%;
+    background: rgb(27, 66, 124);
+    color: white;
+    padding-top: 20px;
+}
+
+#side_bar p {
+    color: orange;
+    font-size: 25px;
+    font-weight: bold;
+    margin: 10px;
+    margin-left: 20px;
+}
+
+#side_bar a {
+    display: block;
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
