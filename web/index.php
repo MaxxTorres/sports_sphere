@@ -7,6 +7,7 @@
     <title>Document</title>
 </head>
 <body>
+  <div id = "background">
     <div class = "general_container">  
 
       <h3>Login or register</h3>
@@ -18,7 +19,7 @@
           <input type="submit" value="login" class="button" style="margin-left: 0px; width: 100%;">
         </form>
 
-        <form action="registration.html" method="post">     
+        <form action="registration.php" method="post">     
           <input type="submit" value="register" class="button" style="margin-left: 0px; width: 100%;">
         </form>
       </div>
@@ -27,5 +28,6 @@
       <h2 class = "subtitle">Fantasy Sports Leagues</h2>
 
     </div>
+  </div>
 </body>
 </html>

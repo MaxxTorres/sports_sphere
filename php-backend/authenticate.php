@@ -14,7 +14,7 @@
 
         if($row['User_username'] === $un && $row['User_password'] === $pass){
             $_SESSION['User_ID'] = $row['User_ID'];
-            header("Location: ../web/LeagueSelectPage.html");
+            header("Location: ../web/LeagueSelectPage.php");
             exit();
         }
         else{

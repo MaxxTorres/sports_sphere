@@ -2,15 +2,13 @@
 include "../php-backend/connect.php";
 session_start();
 
-$query = "SELECT Player_name, Player_position, Player_fantasy_points
-            FROM Teams t
-            INNER JOIN User_table u ON u.User_ID = t.User_ID
-            INNER JOIN Players p ON p.Team_ID = t.Team_ID
-            WHERE u.User_ID = '" . $_SESSION['User_ID'] . "' 
-            AND t.League_ID = '" . $_SESSION['League_ID'] . "';";
+$query = "SELECT team1.Team_name AS Team1_name, team2.Team_name AS Team2_name, Matches.FinalScore AS Match_points
+            FROM Matches
+            JOIN Teams team1 ON Matches.Team1_ID = team1.Team_ID AND team1.League_ID = '" . $_SESSION['League_ID'] . "'
+            JOIN Teams team2 ON Matches.Team2_ID = team2.Team_ID AND team2.League_ID = '" . $_SESSION['League_ID'] . "';";
 
 $result = mysqli_query($conn, $query);
-$players = mysqli_fetch_assoc($result);
+$matches = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +22,7 @@ $players = mysqli_fetch_assoc($result);
 <body>
     <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
         <div class = "container_header">
-            Your Team
+            Matches
         </div>
         <?php
             if ($result && mysqli_num_rows($result) > 0) {
@@ -32,20 +30,20 @@ $players = mysqli_fetch_assoc($result);
                 echo "<table class = 'general_table'>
                         <thead>
                             <tr>
-                                <th>Player Name</th>
-                                <th>Player Position</th>
-                                <th>Fantasy Points</th>
+                                <th>Team 1</th>
+                                <th>Team 2</th>
+                                <th>Final Score</th>
                             </tr>
                         </thead>
                         <tbody>";
             
                 // Loop through each row in the result set
-                while ($players = mysqli_fetch_assoc($result)) {
+                while ($matches = mysqli_fetch_assoc($result)) {
                     // Output each player's data in a table row
                     echo "<tr>
-                            <td>" . htmlspecialchars($players['Player_name']) . "</td>
-                            <td>" . htmlspecialchars($players['Player_position']) . "</td>
-                            <td>" . htmlspecialchars($players['Player_fantasy_points']) . "</td>
+                            <td>" . htmlspecialchars($matches['Team1_name']) . "</td>
+                            <td>" . htmlspecialchars($matches['Team2_name']) . "</td>
+                            <td>" . htmlspecialchars($matches['Match_points']) . "</td>
                           </tr>";
                 }
             
@@ -54,7 +52,7 @@ $players = mysqli_fetch_assoc($result);
                     </table>";
             } else {
                 // If no results are returned
-                echo "<p>No players found.</p>";
+                echo "<p>No matches found.</p>";
             }
         ?>
     </div>

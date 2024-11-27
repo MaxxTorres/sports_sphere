@@ -24,39 +24,8 @@ $players = mysqli_fetch_assoc($result);
 <body>
     <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
         <div class = "container_header">
-            Your Team
+            Players
         </div>
-        <?php
-            if ($result && mysqli_num_rows($result) > 0) {
-                // Start the HTML table
-                echo "<table class = 'general_table'>
-                        <thead>
-                            <tr>
-                                <th>Player Name</th>
-                                <th>Player Position</th>
-                                <th>Fantasy Points</th>
-                            </tr>
-                        </thead>
-                        <tbody>";
-            
-                // Loop through each row in the result set
-                while ($players = mysqli_fetch_assoc($result)) {
-                    // Output each player's data in a table row
-                    echo "<tr>
-                            <td>" . htmlspecialchars($players['Player_name']) . "</td>
-                            <td>" . htmlspecialchars($players['Player_position']) . "</td>
-                            <td>" . htmlspecialchars($players['Player_fantasy_points']) . "</td>
-                          </tr>";
-                }
-            
-                // Close the table
-                echo "</tbody>
-                    </table>";
-            } else {
-                // If no results are returned
-                echo "<p>No players found.</p>";
-            }
-        ?>
     </div>
 
     <!-- SIDEBAR -->

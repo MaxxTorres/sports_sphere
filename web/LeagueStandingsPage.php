@@ -19,7 +19,7 @@ $teams = mysqli_fetch_assoc($result);
     <title>Document</title>
 </head>
 <body>
-    <div class = "general_container" style = "position: relative; margin-left: 200px;"> 
+    <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
         <div class = "container_header">
             League Standings
         </div>
@@ -27,7 +27,7 @@ $teams = mysqli_fetch_assoc($result);
         <?php
             if ($result && mysqli_num_rows($result) > 0) {
                 //Start Table
-                echo "<table border='1'>
+                echo "<table class = 'general_table'>
                         <thead>
                             <tr>
                                 <th>Team Name</th>
@@ -63,14 +63,27 @@ $teams = mysqli_fetch_assoc($result);
             }
         ?>
         <div style = "margin: 5px; margin-top: 50px; margin-left: 10px">
-        <a class = "side_bar_button" href = "LeagueSelectPage.html">League Select</a>
+        <a class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
         <a class = "side_bar_button" href = "LeagueStandingsPage.php">League Standings</a>
         <a class = "side_bar_button" href = "TeamPage.php">Your Team</a>
-        <a class = "side_bar_button" href = "MatchesPage.html">Matches</a>
-        <a class = "side_bar_button" href = "DraftPage.html">Draft</a>
-        <a class = "side_bar_button" href = "PlayersPage.html">Players</a>
-        <a class = "side_bar_button" href = "TradePage.html">Trades</a>
+        <a class = "side_bar_button" href = "MatchesPage.php">Matches</a>
+        <a class = "side_bar_button" href = "DraftPage.php">Draft</a>
+        <a class = "side_bar_button" href = "PlayersPage.php">Players</a>
+        <a class = "side_bar_button" href = "TradePage.php">Trades</a>
         </div>
+        <?php
+            if (isset($_SESSION['League_name'])) {
+                if ($_SESSION['League_name'] == "NBA League") {
+                    echo "<div style='text-align: center;'> <img src = './images/nba_logo.png'> </div>";
+                } elseif ($_SESSION['League_name'] == "MLS League") {
+                    echo "<div style='text-align: center;'> <img src = './images/mls_logo.png'> </div>";
+                } elseif ($_SESSION['League_name'] == "NFL League") {
+                    echo "<div style='text-align: center;'> <img src = './images/nfl_logo.png'> </div>";
+                }
+            } else {
+                echo "<p>No league selected.</p>";
+            }
+        ?>
     </div>
     
 </body>
