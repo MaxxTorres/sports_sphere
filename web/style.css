@@ -20,6 +20,7 @@ body {
     border: 1px solid;
     border-radius: 10px;
     text-align: center;
+    color: white;
 }
 
 .general_table th, td {

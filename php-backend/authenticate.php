@@ -1,6 +1,5 @@
 <?php
     include "connect.php";
-    // Get the values from the form
 
     session_start();
 

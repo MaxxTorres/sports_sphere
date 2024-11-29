@@ -2,9 +2,10 @@
 include "../php-backend/connect.php";
 session_start();
 
-$query = "SELECT Team_name, Team_total_points FROM Teams
+$query = "SELECT Team_name, Team_total_points 
+            FROM Teams
             WHERE League_ID = '" . $_SESSION['League_ID'] . "'
-            GROUP BY Team_total_points DESC;";
+            ORDER BY Team_total_points DESC;";
 
 $result = mysqli_query($conn, $query);
 $teams = mysqli_fetch_assoc($result);
