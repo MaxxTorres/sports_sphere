@@ -1,13 +1,12 @@
 <?php
 include "../php-backend/connect.php";
 session_start();
-
-$query = "SELECT Player_name, Player_position, Player_fantasy_points
-            FROM Teams t
-            INNER JOIN User_table u ON u.User_ID = t.User_ID
-            INNER JOIN Players p ON p.Team_ID = t.Team_ID
-            WHERE u.User_ID = '" . $_SESSION['User_ID'] . "' 
-            AND t.League_ID = '" . $_SESSION['League_ID'] . "';";
+$query = "
+    SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
+    FROM Players p
+    INNER JOIN Teams t ON p.Team_ID = t.Team_ID
+    WHERE t.League_ID = '" . $_SESSION['League_ID'] . "'
+    AND t.User_ID != '". $_SESSION['User_ID'] . "';";
 
 $result = mysqli_query($conn, $query);
 $players = mysqli_fetch_assoc($result);
@@ -26,6 +25,36 @@ $players = mysqli_fetch_assoc($result);
         <div class = "container_header">
             Trade
         </div>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Player Name</th>
+                    <th>Position</th>
+                    <th>Fantasy Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>
+                                <td>" . htmlspecialchars($row['Team_name']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_name']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_position']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_fantasy_points']) . "</td>
+                                <td>
+                                    <a href='TradeConfirmation.php?player_id=" . htmlspecialchars($row['Player_ID']) . "' class='button'>Trade</a>
+                                </td>
+                              </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='5'>No players available for trade.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 
     <!-- SIDEBAR -->

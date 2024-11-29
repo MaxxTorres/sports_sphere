@@ -2,16 +2,48 @@
 include "../php-backend/connect.php";
 session_start();
 
-$query = "SELECT Player_name, Player_position, Player_fantasy_points
-            FROM Teams t
-            INNER JOIN User_table u ON u.User_ID = t.User_ID
-            INNER JOIN Players p ON p.Team_ID = t.Team_ID
-            WHERE u.User_ID = '" . $_SESSION['User_ID'] . "' 
-            AND t.League_ID = '" . $_SESSION['League_ID'] . "';";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
+    $player_id = (int) $_POST['player_id']; // Safely cast to an integer
+    $user_id = $_SESSION['User_ID'];
+    $league_id = $_SESSION['League_ID'];
+    $team_query = "SELECT Team_ID 
+                    FROM Teams 
+                    WHERE User_ID = '$user_id' LIMIT 1";
+    $team_result = mysqli_query($conn, $team_query);
+
+    if ($team_result && mysqli_num_rows($team_result) > 0) {
+        $team = mysqli_fetch_assoc($team_result);
+        $team_id = $team['Team_ID'];
+
+    $query = "UPDATE Players 
+              SET Team_ID = '$team_id' 
+              WHERE Player_ID = '$player_id' AND Team_ID is NULL;";
+
+    // Execute the query and check for errors
+    if (mysqli_query($conn, $query)) {
+        echo "Player signed successfully.";
+    } else {
+        die("Error updating player: " . mysqli_error($conn));
+    }
+}}
+
+
+
+
+$query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
+            FROM Players p
+            WHERE p.Team_ID IS NULL;";
+            
 
 $result = mysqli_query($conn, $query);
 $players = mysqli_fetch_assoc($result);
+
+
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,11 +56,44 @@ $players = mysqli_fetch_assoc($result);
 <body>
     <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
         <div class = "container_header">
-            Players
+            Available Players
         </div>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Player Name</th>
+                    <th>Position</th>
+                    <th>Fantasy Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($result && mysqli_num_rows($result) > 0) {
+                    while ($player = mysqli_fetch_assoc($result)) {
+                        echo "<tr>
+                                <td>" . htmlspecialchars($player['Player_name']) . "</td>
+                                <td>" . htmlspecialchars($player['Player_position']) . "</td>
+                                <td>" . htmlspecialchars($player['Player_fantasy_points']) . "</td>
+                                <td>
+                                    <form action='' method='POST'>
+                                        <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
+                                        <button type='submit' >Sign</button>
+                                    </form>
+                                </td>
+                              </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='4'>No available players.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
-
-    <!-- SIDEBAR -->
+    
+    
+        
+   
     <div id = "side_bar">
         <?php
             if (isset($_SESSION['League_name'])) {
@@ -60,5 +125,8 @@ $players = mysqli_fetch_assoc($result);
             }
         ?>
     </div>
+
+    <!-- SIDEBAR -->
+    
 </body>
 </html>
