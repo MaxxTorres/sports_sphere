@@ -10,6 +10,22 @@ $query = "
 
 $result = mysqli_query($conn, $query);
 $players = mysqli_fetch_assoc($result);
+
+$pending_trades_query = "
+    SELECT pt.trade_id, pt.offering_user_id, pt.target_user_id, pt.offering_player_id, pt.target_player_id, pt.status,
+           op.Player_name AS offering_player_name, tp.Player_name AS target_player_name,
+           ot.Team_name AS offering_team_name, tt.Team_name AS target_team_name
+    FROM PendingTrades pt
+    INNER JOIN Players op ON pt.offering_player_id = op.Player_ID
+    INNER JOIN Players tp ON pt.target_player_id = tp.Player_ID
+    INNER JOIN Teams ot ON op.Team_ID = ot.Team_ID
+    INNER JOIN Teams tt ON tp.Team_ID = tt.Team_ID
+    WHERE (pt.offering_user_id = '" . $_SESSION['User_ID'] . "' OR pt.target_user_id = '" . $_SESSION['User_ID'] . "')
+      AND pt.status = 'Pending';
+";
+$pending_trades_result = mysqli_query($conn, $pending_trades_query);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -18,14 +34,16 @@ $players = mysqli_fetch_assoc($result);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>NFL League</title>
 </head>
 <body>
-    <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
-        <div class = "container_header">
+    <div class="general_container" style="position: relative; margin-left: 200px; margin-top: 100px"> 
+        <div class="container_header">
             Trade
         </div>
-        <table class="general_table">
+
+        <!-- Player List -->
+        <table class="styled-table">
             <thead>
                 <tr>
                     <th>Team Name</th>
@@ -55,39 +73,43 @@ $players = mysqli_fetch_assoc($result);
                 ?>
             </tbody>
         </table>
+
+       
     </div>
 
     <!-- SIDEBAR -->
-    <div id = "side_bar">
+    <div id="side_bar">
         <?php
-            if (isset($_SESSION['League_name'])) {
-                echo "<p>" . htmlspecialchars($_SESSION['League_name']) . "</p>";
-            } else {
-                echo "<p>No league selected.</p>";
-            }
+        if (isset($_SESSION['League_name'])) {
+            echo "<p>" . htmlspecialchars($_SESSION['League_name']) . "</p>";
+        } else {
+            echo "<p>No league selected.</p>";
+        }
         ?>
-        <div style = "margin: 5px; margin-top: 50px; margin-left: 10px">
-        <a class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
-        <a class = "side_bar_button" href = "LeagueStandingsPage.php">League Standings</a>
-        <a class = "side_bar_button" href = "TeamPage.php">Your Team</a>
-        <a class = "side_bar_button" href = "MatchesPage.php">Matches</a>
-        <a class = "side_bar_button" href = "DraftPage.php">Draft</a>
-        <a class = "side_bar_button" href = "PlayersPage.php">Players</a>
-        <a class = "side_bar_button" href = "TradePage.php">Trades</a>
+        <div style="margin: 5px; margin-top: 50px; margin-left: 10px">
+            <a class="side_bar_button" href="LeagueSelectPage.php">League Select</a>
+            <a class="side_bar_button" href="LeagueStandingsPage.php">League Standings</a>
+            <a class="side_bar_button" href="TeamPage.php">Your Team</a>
+            <a class="side_bar_button" href="MatchesPage.php">Matches</a>
+            <a class="side_bar_button" href="DraftPage.php">Draft</a>
+            <a class="side_bar_button" href="PlayersPage.php">Players</a>
+            <a class="side_bar_button" href="TradePage.php">Trades</a>
         </div>
         <?php
-            if (isset($_SESSION['League_name'])) {
-                if ($_SESSION['League_name'] == "NBA League") {
-                    echo "<div style='text-align: center;'> <img src = './images/nba_logo.png'> </div>";
-                } elseif ($_SESSION['League_name'] == "MLS League") {
-                    echo "<div style='text-align: center;'> <img src = './images/mls_logo.png'> </div>";
-                } elseif ($_SESSION['League_name'] == "NFL League") {
-                    echo "<div style='text-align: center;'> <img src = './images/nfl_logo.png'> </div>";
-                }
-            } else {
-                echo "<p>No league selected.</p>";
+        if (isset($_SESSION['League_name'])) {
+            if ($_SESSION['League_name'] == "NBA League") {
+                echo "<div style='text-align: center;'> <img src = './images/nba_logo.png'> </div>";
+            } elseif ($_SESSION['League_name'] == "MLS League") {
+                echo "<div style='text-align: center;'> <img src = './images/mls_logo.png'> </div>";
+            } elseif ($_SESSION['League_name'] == "NFL League") {
+                echo "<div style='text-align: center;'> <img src = './images/nfl_logo.png'> </div>";
             }
+        } else {
+            echo "<p>No league selected.</p>";
+        }
         ?>
     </div>
 </body>
 </html>
+
+           
