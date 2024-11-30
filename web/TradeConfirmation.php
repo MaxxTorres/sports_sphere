@@ -30,7 +30,7 @@ if (!isset($_SESSION['pending_trades'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
     $your_player_id = $_POST['your_player_id'];
 
-    /
+    
     $your_player_query = "
         SELECT p.Player_name, t.Team_name
         FROM Players p
@@ -159,5 +159,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
     </div>
 </body>
 </html>
-</body>
-</html>
+
