@@ -1,26 +1,36 @@
 <?php
-    include "connect.php";
+include "connect.php";
 
-    session_start();
+session_start();
 
-    $un = $_POST['uname'];
-    $pass = $_POST['pwd'];
-    $sql = "SELECT * FROM User_table WHERE User_username LIKE '$un' and User_password LIKE '$pass'";
-    $result = mysqli_query($conn, $sql);
+$un = $_POST['uname'];
+$pass = $_POST['pwd'];
 
-    if(mysqli_num_rows($result)===1){
-        $row = mysqli_fetch_assoc($result);
+// Prepare SQL query
+$sql = "SELECT * FROM User_table WHERE User_username = ? AND User_password = ?";
+$stmt = mysqli_prepare($conn, $sql);
 
-        if($row['User_username'] === $un && $row['User_password'] === $pass){
-            $_SESSION['User_ID'] = $row['User_ID'];
-            header("Location: ../web/LeagueSelectPage.php");
-        }
-        else{
-            echo "incorrect username or password";
-        }
+mysqli_stmt_bind_param($stmt, "ss", $un, $pass); //Bind parameters
+mysqli_stmt_execute($stmt); // Execute statement
+
+$result = mysqli_stmt_get_result($stmt);
+
+// Check if a matching user was found
+if (mysqli_num_rows($result) === 1) {
+    $row = mysqli_fetch_assoc($result);
+
+    // Verify username and password
+    if ($row['User_username'] === $un && $row['User_password'] === $pass) {
+        $_SESSION['User_ID'] = $row['User_ID']; // Store the user ID in session
+        header("Location: ../web/LeagueSelectPage.php"); // Redirect to the league select page
+        exit();
+    } else {
+        echo "Incorrect username or password";
     }
-    else {
-        echo "incorrect username or password";
-    }
-    exit();
+} else {
+    echo "Incorrect username or password";
+}
+
+mysqli_stmt_close($stmt);
+mysqli_close($conn);
 ?>

@@ -16,6 +16,6 @@
         exit();
     }
     else {
-        echo('invalid league');
+        echo('Invalid league!');
     }
 ?>
