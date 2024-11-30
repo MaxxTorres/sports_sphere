@@ -58,7 +58,7 @@ $players = mysqli_fetch_assoc($result);
         <div class = "container_header">
             Available Players
         </div>
-        <table class="styled-table">
+        <table class="general_table">
             <thead>
                 <tr>
                     <th>Player Name</th>
@@ -78,7 +78,7 @@ $players = mysqli_fetch_assoc($result);
                                 <td>
                                     <form action='' method='POST'>
                                         <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
-                                        <button type='submit' >Sign</button>
+                                        <button class='button' type='submit' >Sign</button>
                                     </form>
                                 </td>
                               </tr>";

@@ -14,13 +14,13 @@
 
       <div>
         <form action="../php-backend/authenticate.php" method="post">     
-          Username: <input type="text" id="uname" name="uname" required=""> <br>
-          Password: <input type="password" id="pwd " name="pwd" required=""> <br>
-          <input type="submit" value="login" class="button" style="margin-left: 0px; width: 100%;">
+          Username: <input type="text" id="uname" name="uname" required> <br>
+          Password: <input type="password" id="pwd " name="pwd" required> <br>
+          <input type="submit" value="Login" class="button" style="margin-left: 0px; width: 100%;">
         </form>
 
         <form action="registration.php" method="post">     
-          <input type="submit" value="register" class="button" style="margin-left: 0px; width: 100%;">
+          <input type="submit" value="Register" class="button" style="margin-left: 0px; width: 100%;">
         </form>
       </div>
 

@@ -14,15 +14,13 @@
         if($row['User_username'] === $un && $row['User_password'] === $pass){
             $_SESSION['User_ID'] = $row['User_ID'];
             header("Location: ../web/LeagueSelectPage.php");
-            exit();
         }
         else{
-            header("Location: index.html?error=incorrect username or password");
-            exit();
+            echo "incorrect username or password";
         }
     }
     else {
-        header("Location: index.html?error=incorrect username or password");
-        exit();
+        echo "incorrect username or password";
     }
+    exit();
 ?>

@@ -25,7 +25,7 @@ $players = mysqli_fetch_assoc($result);
         <div class = "container_header">
             Trade
         </div>
-        <table class="styled-table">
+        <table class="general_table">
             <thead>
                 <tr>
                     <th>Team Name</th>

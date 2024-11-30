@@ -2,6 +2,10 @@ body {
     font-family: 'Ubuntu', sans-serif;
 }
 
+input {
+    width: 100%;
+}
+
 #background {
     padding-top: 50px;
     margin: -10px;
@@ -30,7 +34,6 @@ body {
 .general_table th {
     border-bottom: 1px solid rgb(0, 0, 0);
 }
-
 
 .general_container {
     display: flex;

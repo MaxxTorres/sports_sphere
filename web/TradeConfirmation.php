@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
         <p>Trading for: <strong><?php echo htmlspecialchars($trade_player['Player_name']); ?></strong> from Team: <strong><?php echo htmlspecialchars($trade_player['Team_name']); ?></strong></p>
         
         <form method="POST">
-            <table class="styled-table">
+            <table class="general_table" style="margin-bottom: 0; margin-top:0">
                 <thead>
                     <tr>
                         <th>Player Name</th>
