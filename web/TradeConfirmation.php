@@ -2,11 +2,12 @@
 include "../php-backend/connect.php";
 session_start();
 
-
+// Get the ID of the player being traded for
 $trade_player_id = $_GET['player_id'];
 
+// Fetch details of the player being traded for
 $trade_player_query = "
-    SELECT p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
+    SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name, t.User_ID AS target_user_id
     FROM Players p
     INNER JOIN Teams t ON p.Team_ID = t.Team_ID
     WHERE p.Player_ID = '$trade_player_id';
@@ -14,37 +15,32 @@ $trade_player_query = "
 $trade_player_result = mysqli_query($conn, $trade_player_query);
 $trade_player = mysqli_fetch_assoc($trade_player_result);
 
-
+// Fetch the current user's players
 $user_players_query = "
     SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
     FROM Players p
     INNER JOIN Teams t ON p.Team_ID = t.Team_ID
     WHERE t.League_ID = '" . $_SESSION['League_ID'] . "'
-    AND t.User_ID = '". $_SESSION['User_ID'] . "';";
+    AND t.User_ID = '" . $_SESSION['User_ID'] . "';
+";
 $user_players_result = mysqli_query($conn, $user_players_query);
 
-
-if (!isset($_SESSION['pending_trades'])) {
-    $_SESSION['pending_trades'] = [];
-}
+// Handle form submission for a trade
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
     $your_player_id = $_POST['your_player_id'];
+    $offering_user_id = $_SESSION['User_ID']; // Current user offering the trade
+    $target_user_id = $trade_player['target_user_id']; // Target user owning the player
 
-    
-    $your_player_query = "
-        SELECT p.Player_name, t.Team_name
-        FROM Players p
-        INNER JOIN Teams t ON p.Team_ID = t.Team_ID
-        WHERE p.Player_ID = '$your_player_id';
+    // Insert the trade into the PendingTrades table
+    $insert_trade_query = "
+        INSERT INTO PendingTrades (offering_user_id, target_user_id, offering_player_id, target_player_id, status)
+        VALUES ('$offering_user_id', '$target_user_id', '$your_player_id', '$trade_player_id', 'Pending');
     ";
-    $your_player_result = mysqli_query($conn, $your_player_query);
-    $your_player = mysqli_fetch_assoc($your_player_result);
+    mysqli_query($conn, $insert_trade_query);
 
-    
-    $_SESSION['pending_trades'][] = [
-        'your_player' => $your_player,
-        'trade_player' => $trade_player
-    ];
+    // Redirect to TradePage with a success message
+    header("Location: TradePage.php?trade=success");
+    exit();
 }
 ?>
 
@@ -57,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
     <title>Trade Confirmation</title>
 </head>
 <body>
-    <div class="general_container" style="margin: 20px;">
+    <div class="general_container" style="position: relative; margin-left: 200px; margin-top: 100px">
         <div class="container_header">Select Your Player to Offer</div>
         <p>Trading for: <strong><?php echo htmlspecialchars($trade_player['Player_name']); ?></strong> from Team: <strong><?php echo htmlspecialchars($trade_player['Team_name']); ?></strong></p>
         
@@ -91,41 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
                 </tbody>
             </table>
         </form>
-        <div class="pending_trades">
-            <h3>Pending Trades</h3>
-            <table class="styled-table">
-                <thead>
-                    <tr>
-                        <th>Your Player</th>
-                        <th>Your Team</th>
-                        <th>Trade Player</th>
-                        <th>Trade Team</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    if (!empty($_SESSION['pending_trades'])) {
-                        foreach ($_SESSION['pending_trades'] as $trade) {
-                            echo "<tr>
-                                    <td>" . htmlspecialchars($trade['your_player']['Player_name']) . "</td>
-                                    <td>" . htmlspecialchars($trade['your_player']['Team_name']) . "</td>
-                                    <td>" . htmlspecialchars($trade['trade_player']['Player_name']) . "</td>
-                                    <td>" . htmlspecialchars($trade['trade_player']['Team_name']) . "</td>
-                                  </tr>";
-                        }
-                    } else {
-                        echo "<tr><td colspan='4'>No pending trades.</td></tr>";
-                    }
-                    ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
         
     </div>
-    
-
     <div id = "side_bar">
         <?php
             if (isset($_SESSION['League_name'])) {
@@ -159,4 +122,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['your_player_id'])) {
     </div>
 </body>
 </html>
+
 
