@@ -2,10 +2,11 @@
 include "../php-backend/connect.php";
 session_start();
 
-$query = "SELECT team1.Team_name AS Team1_name, team2.Team_name AS Team2_name, Matches.FinalScore AS Match_points
+$query = "SELECT team1.Team_name AS Team1_name, team2.Team_name AS Team2_name, Matches.FinalScore AS Match_points, Matches.MatchDate
             FROM Matches
             JOIN Teams team1 ON Matches.Team1_ID = team1.Team_ID AND team1.League_ID = '" . $_SESSION['League_ID'] . "'
-            JOIN Teams team2 ON Matches.Team2_ID = team2.Team_ID AND team2.League_ID = '" . $_SESSION['League_ID'] . "';";
+            JOIN Teams team2 ON Matches.Team2_ID = team2.Team_ID AND team2.League_ID = '" . $_SESSION['League_ID'] . "'
+            ORDER BY MatchDate DESC;";
 
 $result = mysqli_query($conn, $query);
 $matches = mysqli_fetch_assoc($result);
@@ -33,6 +34,7 @@ $matches = mysqli_fetch_assoc($result);
                                 <th>Team 1</th>
                                 <th>Team 2</th>
                                 <th>Final Score</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>";
@@ -44,6 +46,7 @@ $matches = mysqli_fetch_assoc($result);
                             <td>" . htmlspecialchars($matches['Team1_name']) . "</td>
                             <td>" . htmlspecialchars($matches['Team2_name']) . "</td>
                             <td>" . htmlspecialchars($matches['Match_points']) . "</td>
+                            <td>" . htmlspecialchars($matches['MatchDate']) . "</td>
                           </tr>";
                 }
             
@@ -61,19 +64,23 @@ $matches = mysqli_fetch_assoc($result);
     <div id = "side_bar">
         <?php
             if (isset($_SESSION['League_name'])) {
-                echo "<p>" . htmlspecialchars($_SESSION['League_name']) . "</p>";
+                echo "<h1>" . htmlspecialchars($_SESSION['League_name']) . "</h1>";
             } else {
-                echo "<p>No league selected.</p>";
+                echo "<h1>No league selected.</h1>";
             }
+            echo "<p>" . htmlspecialchars($_SESSION['role']) . "</p>";
         ?>
-        <div style = "margin: 5px; margin-top: 50px; margin-left: 10px">
-        <a class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
-        <a class = "side_bar_button" href = "LeagueStandingsPage.php">League Standings</a>
-        <a class = "side_bar_button" href = "TeamPage.php">Your Team</a>
-        <a class = "side_bar_button" href = "MatchesPage.php">Matches</a>
-        <a class = "side_bar_button" href = "DraftPage.php">Draft</a>
-        <a class = "side_bar_button" href = "PlayersPage.php">Players</a>
-        <a class = "side_bar_button" href = "TradePage.php">Trades</a>
+        <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
+        </div>
+        <div style = "margin: 5px; margin-left: 10px; margin-top: 20px;">
+            <a class = "side_bar_button" href = "LeagueStandingsPage.php">| League Standings</a>
+            <a class = "side_bar_button" href = "TeamPage.php">| Your Team</a>
+            <a class = "side_bar_button" href = "MatchesPage.php">| Matches</a>
+            <a class = "side_bar_button" href = "DraftPage.php">| Draft</a>
+            <a class = "side_bar_button" href = "PlayersPage.php">| Players</a>
+            <a class = "side_bar_button" href = "TradePage.php">| Trades</a>
         </div>
         <?php
             if (isset($_SESSION['League_name'])) {
@@ -89,5 +96,6 @@ $matches = mysqli_fetch_assoc($result);
             }
         ?>
     </div>
+
 </body>
 </html>

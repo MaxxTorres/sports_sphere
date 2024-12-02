@@ -79,37 +79,43 @@ $players_result = mysqli_query($conn, $players_query);
         <?php endif; ?>
     </div>
 
+    
     <!-- SIDEBAR -->
-    <div id="side_bar">
+    <div id = "side_bar">
         <?php
             if (isset($_SESSION['League_name'])) {
-                echo "<p>" . htmlspecialchars($_SESSION['League_name']) . "</p>";
+                echo "<h1>" . htmlspecialchars($_SESSION['League_name']) . "</h1>";
             } else {
-                echo "<p>No league selected.</p>";
+                echo "<h1>No league selected.</h1>";
             }
+            echo "<p>" . htmlspecialchars($_SESSION['role']) . "</p>";
         ?>
-        <div style="margin: 5px; margin-top: 50px; margin-left: 10px">
-        <a class="side_bar_button" href="LeagueSelectPage.php">League Select</a>
-        <a class="side_bar_button" href="LeagueStandingsPage.php">League Standings</a>
-        <a class="side_bar_button" href="TeamPage.php">Your Team</a>
-        <a class="side_bar_button" href="MatchesPage.php">Matches</a>
-        <a class="side_bar_button" href="DraftPage.php">Draft</a>
-        <a class="side_bar_button" href="PlayersPage.php">Players</a>
-        <a class="side_bar_button" href="TradePage.php">Trades</a>
+        <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
+        </div>
+        <div style = "margin: 5px; margin-left: 10px; margin-top: 20px;">
+            <a class = "side_bar_button" href = "LeagueStandingsPage.php">| League Standings</a>
+            <a class = "side_bar_button" href = "TeamPage.php">| Your Team</a>
+            <a class = "side_bar_button" href = "MatchesPage.php">| Matches</a>
+            <a class = "side_bar_button" href = "DraftPage.php">| Draft</a>
+            <a class = "side_bar_button" href = "PlayersPage.php">| Players</a>
+            <a class = "side_bar_button" href = "TradePage.php">| Trades</a>
         </div>
         <?php
             if (isset($_SESSION['League_name'])) {
                 if ($_SESSION['League_name'] == "NBA League") {
-                    echo "<div style='text-align: center;'> <img src='./images/nba_logo.png'> </div>";
+                    echo "<div style='text-align: center;'> <img src = './images/nba_logo.png'> </div>";
                 } elseif ($_SESSION['League_name'] == "MLS League") {
-                    echo "<div style='text-align: center;'> <img src='./images/mls_logo.png'> </div>";
+                    echo "<div style='text-align: center;'> <img src = './images/mls_logo.png'> </div>";
                 } elseif ($_SESSION['League_name'] == "NFL League") {
-                    echo "<div style='text-align: center;'> <img src='./images/nfl_logo.png'> </div>";
+                    echo "<div style='text-align: center;'> <img src = './images/nfl_logo.png'> </div>";
                 }
             } else {
                 echo "<p>No league selected.</p>";
             }
         ?>
     </div>
+    
 </body>
 </html>

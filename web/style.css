@@ -93,12 +93,18 @@ input {
     padding-top: 20px;
 }
 
-#side_bar p {
+#side_bar h1 {
     color: orange;
     font-size: 25px;
     font-weight: bold;
     margin: 10px;
     margin-left: 20px;
+}
+
+#side_bar p {
+    margin: 10px;
+    margin-left: 20px;
+    color: lightgray;
 }
 
 #side_bar a {

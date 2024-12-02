@@ -33,6 +33,7 @@ if (mysqli_num_rows($result_check_user) < 1) {
     $result_insert_user = mysqli_stmt_execute($stmt_insert_user);
     
     if ($result_insert_user) {
+        $_SESSION['User_ID'] = $new_user_ID;
         header("Location: ../web/LeagueSelectPage.php");
         exit();
     } else {

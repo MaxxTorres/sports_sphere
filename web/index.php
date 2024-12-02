@@ -13,9 +13,9 @@
       <h3>Login or register</h3>
 
       <div>
-        <form action="../php-backend/authenticate.php" method="post">     
-          Username: <input type="text" id="uname" name="uname" required> <br>
-          Password: <input type="password" id="pwd " name="pwd" required> <br>
+        <form action="../php-backend/authenticate.php" method="post" autocomplete="off">     
+          Username: <input autocomplete="off" type="text" id="uname" name="uname" required> <br>
+          Password: <input autocomplete="new-password" type="password" id="pwd " name="pwd" required> <br>
           <input type="submit" value="Login" class="button" style="margin-left: 0px; width: 100%;">
         </form>
 

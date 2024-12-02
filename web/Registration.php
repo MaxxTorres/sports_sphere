@@ -13,12 +13,12 @@
       <h3>User Registration</h3>
 
       <div>
-        <form action="../php-backend/register.php" method="post">     
+        <form action="../php-backend/register.php" method="post" autocomplete="off">     
           Full name: <input type="text" id="fullname" name="fullname"> <br>
           email: <input type="text" id="email" name="email" required> <br>
           Preferences: <input type="text" id="prefer" name="prefer"> <br> <br>
-          Username: <input type="text" id="username" name="username" required> <br>
-          Password: <input type="password" id="pw" name="pw" required=""> <br>
+          Username: <input autocomplete="off" type="text" id="username" name="username" required> <br>
+          Password: <input autocomplete="new-password" type="password" id="pw" name="pw" required=""> <br>
           <input type="submit" value="Submit" class="button" style="margin-left: 0px; width: 100%;">
         </form>
         <form action="index.php" method="post">     
