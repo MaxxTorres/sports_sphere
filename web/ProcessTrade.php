@@ -13,22 +13,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trade_id'], $_POST['a
         WHERE trade_id = '$trade_id' AND status = 'Pending';
     ";
     $trade_result = mysqli_query($conn, $trade_query);
-    $trade = mysqli_fetch_assoc($trade_result);
 
-    if (!$trade) {
-        die("Trade not found or already processed.");
+    if (!$trade_result || mysqli_num_rows($trade_result) == 0) {
+        die("Trade not found or already processed. Error: " . mysqli_error($conn));
     }
 
+    $trade = mysqli_fetch_assoc($trade_result);
+
     if ($action === 'accept') {
-        // Swap Team_IDs of the players
-        $swap_query = "
-            UPDATE Players p1, Players p2
-            SET p1.Team_ID = (SELECT Team_ID FROM Players WHERE Player_ID = '" . $trade['target_player_id'] . "'),
-                p2.Team_ID = (SELECT Team_ID FROM Players WHERE Player_ID = '" . $trade['offering_player_id'] . "')
-            WHERE p1.Player_ID = '" . $trade['offering_player_id'] . "'
-              AND p2.Player_ID = '" . $trade['target_player_id'] . "';
+        // Fetch team IDs for the offering and target players
+        $offering_player_team_query = "
+            SELECT Team_ID 
+            FROM Players 
+            WHERE Player_ID = '" . $trade['offering_player_id'] . "';
         ";
-        mysqli_multi_query($conn, $swap_query);
+        $offering_team_result = mysqli_query($conn, $offering_player_team_query);
+        if (!$offering_team_result) {
+            die("Error fetching offering player's team: " . mysqli_error($conn));
+        }
+        $offering_team_id = mysqli_fetch_assoc($offering_team_result)['Team_ID'];
+
+        $target_player_team_query = "
+            SELECT Team_ID 
+            FROM Players 
+            WHERE Player_ID = '" . $trade['target_player_id'] . "';
+        ";
+        $target_team_result = mysqli_query($conn, $target_player_team_query);
+        if (!$target_team_result) {
+            die("Error fetching target player's team: " . mysqli_error($conn));
+        }
+        $target_team_id = mysqli_fetch_assoc($target_team_result)['Team_ID'];
+
+        // Swap team IDs
+        $update_offering_player_query = "
+            UPDATE Players
+            SET Team_ID = '$target_team_id'
+            WHERE Player_ID = '" . $trade['offering_player_id'] . "';
+        ";
+        if (!mysqli_query($conn, $update_offering_player_query)) {
+            die("Error updating offering player: " . mysqli_error($conn));
+        }
+
+        $update_target_player_query = "
+            UPDATE Players
+            SET Team_ID = '$offering_team_id'
+            WHERE Player_ID = '" . $trade['target_player_id'] . "';
+        ";
+        if (!mysqli_query($conn, $update_target_player_query)) {
+            die("Error updating target player: " . mysqli_error($conn));
+        }
 
         // Update trade status to 'Accepted'
         $update_trade_query = "
@@ -36,7 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trade_id'], $_POST['a
             SET status = 'Accepted'
             WHERE trade_id = '$trade_id';
         ";
-        mysqli_query($conn, $update_trade_query);
+        if (!mysqli_query($conn, $update_trade_query)) {
+            die("Error updating trade status: " . mysqli_error($conn));
+        }
     } elseif ($action === 'reject') {
         // Update trade status to 'Rejected'
         $update_trade_query = "
@@ -44,11 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['trade_id'], $_POST['a
             SET status = 'Rejected'
             WHERE trade_id = '$trade_id';
         ";
-        mysqli_query($conn, $update_trade_query);
+        if (!mysqli_query($conn, $update_trade_query)) {
+            die("Error rejecting trade: " . mysqli_error($conn));
+        }
     }
 
-    header("Location: PendingTrades.php");
+    header("Location: TradePage.php");
     exit();
 }
-?>
 
+?>

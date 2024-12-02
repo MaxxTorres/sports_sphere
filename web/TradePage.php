@@ -73,6 +73,50 @@ $pending_trades_result = mysqli_query($conn, $pending_trades_query);
                 ?>
             </tbody>
         </table>
+        <h2>Pending Trades</h2>
+        <table class="general_table">
+            <thead>
+                <tr>
+                    <th>Offering Team</th>
+                    <th>Offering Player</th>
+                    <th>Target Team</th>
+                    <th>Target Player</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+        <?php
+        if (mysqli_num_rows($pending_trades_result) > 0) {
+            while ($row = mysqli_fetch_assoc($pending_trades_result)) {
+                echo "<tr>
+                        <td>" . htmlspecialchars($row['offering_team_name']) . "</td>
+                        <td>" . htmlspecialchars($row['offering_player_name']) . "</td>
+                        <td>" . htmlspecialchars($row['target_team_name']) . "</td>
+                        <td>" . htmlspecialchars($row['target_player_name']) . "</td>
+                        <td>";
+                
+                // Check if the current user is the target of the trade
+                if ($row['target_user_id'] == $_SESSION['User_ID']) {
+                    echo "<form method='POST' action='ProcessTrade.php' style='display:inline-block;'>
+                            <input type='hidden' name='trade_id' value='" . htmlspecialchars($row['trade_id']) . "'>
+                            <button type='submit' name='action' value='accept' >Accept</button>
+                        </form>
+                        <form method='POST' action='ProcessTrade.php' style='display:inline-block;'>
+                            <input type='hidden' name='trade_id' value='" . htmlspecialchars($row['trade_id']) . "'>
+                            <button type='submit' name='action' value='reject'>Reject</button>
+                        </form>";
+                } else {
+                    echo "N/A";
+                }
+
+                echo "</td></tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>No pending trades found.</td></tr>";
+        }
+        ?>
+    </tbody>
+        </table>
 
        
     </div>
