@@ -8,7 +8,10 @@
 </head>
 <body>
     <div id = "background">
-        <div id = "league_select_container">  
+        <div id = "league_select_container" style = "position: relative;">  
+            <div class = "container_header" style = "color: white;">
+                League Selection 
+            </div>  
             <a href = "../php-backend/league_select.php?league_name=NBA%20League">
                 <div><p>NBA League</p><img src = "./images/nba_logo.png"></div>
             </a>

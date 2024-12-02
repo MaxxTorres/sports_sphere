@@ -88,7 +88,7 @@ $players_result = mysqli_query($conn, $players_query);
             } else {
                 echo "<h1>No league selected.</h1>";
             }
-            echo "<p>" . htmlspecialchars($_SESSION['role']) . "</p>";
+            echo "<p>" . htmlspecialchars($_SESSION['Username']), " (", htmlspecialchars($_SESSION['role']), ")" . "</p>";
         ?>
         <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
@@ -116,6 +116,6 @@ $players_result = mysqli_query($conn, $players_query);
             }
         ?>
     </div>
-    
+
 </body>
 </html>
