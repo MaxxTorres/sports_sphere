@@ -208,17 +208,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_match']) && $is_c
     <title>Settings</title>
 </head>
 <body>
-    <div class="general_container" style="position: relative; margin-left: 200px; margin-top: 100px">
-    <div class="container_header">
-            Settings
+    <?php if ($is_commissioner): ?>
+    <div class = 'general_container' style = 'position: relative; margin-left: 200px; margin-top: 50px'>
+        <div class="container_header">
+            Team Management
         </div>
-        
         <?php if (isset($message)): ?>
             <p><?php echo htmlspecialchars($message); ?></p>
         <?php endif; ?>
 
-        <?php if ($is_commissioner): ?>
-            <h2>Manage Users in League</h2>
+        
             <table class="general_table">
                 <thead>
                     <tr>
@@ -250,40 +249,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_match']) && $is_c
                     <?php endif; ?>
                 </tbody>
             </table>
-            <h2>Add New Match</h2>
-                <form method="POST">
-                    <label for="team1_id">Team 1 ID:</label>
-                    <input type="number" id="team1_id" name="team1_id" required><br>
+    </div>
+    <div class = 'general_container' style = 'position: relative; margin-left: 200px; margin-top: 50px'>
+        <div class="container_header">
+            Add New Match
+        </div>
+        <form method="POST">
+            <label for="team1_id">Team 1 ID:</label>
+            <input type="number" id="team1_id" name="team1_id" required><br>
 
-                    <label for="team2_id">Team 2 ID:</label>
-                    <input type="number" id="team2_id" name="team2_id" required><br>
+            <label for="team2_id">Team 2 ID:</label>
+            <input type="number" id="team2_id" name="team2_id" required><br>
 
-                    <label for="match_date">Match Date:</label>
-                    <input type="date" id="match_date" name="match_date" required><br>
+            <label for="match_date">Match Date:</label>
+            <input type="date" id="match_date" name="match_date" required><br>
 
-                    <label for="final_score">Final Score:</label>
-                    <input type="text" id="final_score" name="final_score"><br>
+            <label for="final_score">Final Score:</label>
+            <input type="text" id="final_score" name="final_score"><br>
 
-                    <label for="winner">Winner:</label>
-                    <input type="text" id="winner" name="winner"><br>
+            <label for="winner">Winner:</label>
+            <input type="text" id="winner" name="winner"><br>
 
-                    <button type="submit" name="add_match" class="button">Add Match</button>
-                </form>
+            <button type="submit" name="add_match" class="button">Add Match</button>
+        </form>
+    </div>
+    <div class = 'general_container' style = 'position: relative; margin-left: 200px; margin-top: 50px'>
+        <div class="container_header">
+            Add New Team
+        </div>
+        <form method="POST">
+            <label for="team_name">Team Name:</label>
+            <input type="text" id="team_name" name="team_name" required><br>
 
+            <label for="user_id">User ID:</label>
+            <input type="number" id="user_id" name="user_id" required><br>
 
-            <h2>Add New Team</h2>
-            <form method="POST">
-                <label for="team_name">Team Name:</label>
-                <input type="text" id="team_name" name="team_name" required><br>
-
-                <label for="user_id">User ID:</label>
-                <input type="number" id="user_id" name="user_id" required><br>
-
-                <button type="submit" name="add_team" class = "button">Add Team</button>
-            </form>
-        <?php endif; ?>
-
-        <h2>Update Profile</h2>
+            <button type="submit" name="add_team" class = "button">Add Team</button>
+        </form>
+    </div>
+    <?php endif; ?>
+    <div class = 'general_container' style = 'position: relative; margin-left: 200px; margin-top: 50px'>
+        <div class="container_header">
+            Update Profile
+        </div>
         <form method="POST">
             <label for="team_name">Full Name:</label>
             <input type="text" id="team_name" name="team_name" value="<?php echo htmlspecialchars($current_user['User_fullname']); ?>" required><br>
@@ -300,6 +308,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_match']) && $is_c
             <button type="submit" name="update_profile" class = "button">Update Profile</button>
         </form>
     </div>
+
      <!-- SIDEBAR -->
      <div id = "side_bar">
         <?php
