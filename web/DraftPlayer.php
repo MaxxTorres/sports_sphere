@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
         SELECT t.Team_ID
         FROM Teams t
         WHERE t.User_ID = '" . $_SESSION['User_ID'] . "'
-        AND t.League_ID = '" . $_SESSION['League_ID'] . "';
-    ";
+        AND t.League_ID = '" . $_SESSION['League_ID'] . "';";
     $team_result = mysqli_query($conn, $team_query);
     $team = mysqli_fetch_assoc($team_result);
 
@@ -30,9 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
         $remaining_players_query = "
             SELECT COUNT(*) AS undrafted_count
             FROM Players p
-            LEFT JOIN Teams t ON p.Team_ID = t.Team_ID
-            WHERE t.League_ID = '" . $_SESSION['League_ID'] . "'
-            AND p.Team_ID IS NULL;
+            WHERE p.Team_ID IS NULL;
         ";
         $remaining_players_result = mysqli_query($conn, $remaining_players_query);
         $remaining_players = mysqli_fetch_assoc($remaining_players_result);
@@ -53,3 +50,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
     exit();
 }
 ?>
+
+

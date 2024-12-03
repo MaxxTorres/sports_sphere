@@ -1,3 +1,5 @@
+
+
 <?php
 include "../php-backend/connect.php";
 session_start();
@@ -11,16 +13,16 @@ $draft_status_query = "
 $draft_status_result = mysqli_query($conn, $draft_status_query);
 $draft_status = mysqli_fetch_assoc($draft_status_result);
 
-// Fetch all players in the league if draft is incomplete
-$players_query = "
-    SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
-    FROM Players p
-    LEFT JOIN Teams t ON p.Team_ID = t.Team_ID
-    WHERE t.League_ID = '" . $_SESSION['League_ID'] . "' 
-      AND p.Team_ID IS NULL;
-";
 
-$players_result = mysqli_query($conn, $players_query);
+$query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
+            FROM Players p
+            WHERE p.Player_availability = 'A';";
+            
+
+$result = mysqli_query($conn, $query);
+$players = mysqli_fetch_assoc($result);
+
+
 ?>
 
 <!DOCTYPE html>
@@ -29,56 +31,52 @@ $players_result = mysqli_query($conn, $players_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Draft Page</title>
+    <title>Draft</title>
 </head>
 <body>
-    <div class="general_container" style="position: relative; margin-left: 200px; margin-top: 100px"> 
-        <div class="container_header">
+    
+
+    <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
+        <div class = "container_header">
             Draft
         </div>
-
-        <?php if ($draft_status['DraftStatus'] === 'C'): ?>
-            <div class="draft_status">
-                <h2>The draft has been completed!</h2>
-            </div>
+        <?php if (isset($draft_status['DraftStatus']) && $draft_status['DraftStatus'] === 'C'): ?>
+            <div> Draft had been completed </div>
         <?php else: ?>
-            <div class="draft_players">
-                <h3>Available Players</h3>
-                <table class="styled-table">
-                    <thead>
-                        <tr>
-                            <th>Player Name</th>
-                            <th>Position</th>
-                            <th>Fantasy Points</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (mysqli_num_rows($players_result) > 0) {
-                            while ($player = mysqli_fetch_assoc($players_result)) {
-                                echo "<tr>
-                                        <td>" . htmlspecialchars($player['Player_name']) . "</td>
-                                        <td>" . htmlspecialchars($player['Player_position']) . "</td>
-                                        <td>" . htmlspecialchars($player['Player_fantasy_points']) . "</td>
-                                        <td>
-                                            <form method='POST' action='DraftPlayer.php'>
-                                                <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
-                                                <button type='submit'>Draft</button>
-                                            </form>
-                                        </td>
-                                      </tr>";
-                            }
-                        } else {
-                            echo "<tr><td colspan='4'>No players available for draft.</td></tr>";
+            <table class="general_table">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                        <th>Position</th>
+                        <th>Fantasy Points</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($player = mysqli_fetch_assoc($result)) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($player['Player_name']) . "</td>
+                                    <td>" . htmlspecialchars($player['Player_position']) . "</td>
+                                    <td>" . htmlspecialchars($player['Player_fantasy_points']) . "</td>
+                                    <td>
+                                        <form action='DraftPlayer.php' method='POST'>
+                                            <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
+                                            <button class='button' type='submit' >Draft</button>
+                                        </form>
+                                    </td>
+                                </tr>";
                         }
-                        ?>
-                    </tbody>
-                </table>
-            </div>
+                    } else {
+                        echo "<tr><td colspan='4'>No available players.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
         <?php endif; ?>
     </div>
-
+    
     
     <!-- SIDEBAR -->
     <div id = "side_bar">
@@ -93,6 +91,7 @@ $players_result = mysqli_query($conn, $players_query);
         <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "settings.php">Settings</a>
         </div>
         <div style = "margin: 5px; margin-left: 10px; margin-top: 20px;">
             <a class = "side_bar_button" href = "LeagueStandingsPage.php">| League Standings</a>
@@ -116,6 +115,9 @@ $players_result = mysqli_query($conn, $players_query);
             }
         ?>
     </div>
-
+    
 </body>
 </html>
+
+
+

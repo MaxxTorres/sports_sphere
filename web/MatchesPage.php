@@ -73,6 +73,7 @@ $matches = mysqli_fetch_assoc($result);
         <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "settings.php">Settings</a>
         </div>
         <div style = "margin: 5px; margin-left: 10px; margin-top: 20px;">
             <a class = "side_bar_button" href = "LeagueStandingsPage.php">| League Standings</a>
