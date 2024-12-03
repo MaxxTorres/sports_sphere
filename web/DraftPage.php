@@ -12,13 +12,17 @@ $draft_status_result = mysqli_query($conn, $draft_status_query);
 $draft_status = mysqli_fetch_assoc($draft_status_result);
 
 // Fetch all players in the league if draft is incomplete
-$players_query = "
-    SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
-    FROM Players p
-    LEFT JOIN Teams t ON p.Team_ID = t.Team_ID
-    WHERE t.League_ID = '" . $_SESSION['League_ID'] . "' 
-      AND p.Team_ID IS NULL;
-";
+// $players_query = "
+//     SELECT p.Player_ID, p.Player_name, p.Player_position, p.Player_fantasy_points, t.Team_name
+//     FROM Players p
+//     LEFT JOIN Teams t ON p.Team_ID = t.Team_ID
+//     WHERE t.League_ID = '" . $_SESSION['League_ID'] . "' 
+//       AND p.Team_ID IS NULL;
+// ";
+
+$players_query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
+            FROM Players p
+            WHERE p.Team_ID IS NULL AND p.League_ID = '" . $_SESSION['League_ID'] . "';";
 
 $players_result = mysqli_query($conn, $players_query);
 ?>
