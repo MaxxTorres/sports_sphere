@@ -10,7 +10,7 @@ if (!isset($_SESSION['User_ID']) || !isset($_SESSION['League_ID'])) {
 $user_id = $_SESSION['User_ID'];
 $league_id = $_SESSION['League_ID'];
 
-// Check if the logged-in user is the league commissioner (admin)
+// Check if the logged-in user is the league commissioner
 $commissioner_query = "
     SELECT League_commissioner 
     FROM Leagues 
@@ -95,7 +95,7 @@ if ($is_commissioner) {
     ";
     $users_result = mysqli_query($conn, $users_query);
 }
-// Generate User_ID
+// Generate team_ID
 $get_last_ID_sql = "SELECT Team_ID
                         FROM Teams
                         ORDER BY Team_ID DESC
@@ -151,6 +151,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
         $message = "Error: The provided User_ID does not exist.";
     }
 }
+// Generate match_ID
+$get_last_match_ID_sql = "SELECT Match_ID
+                        FROM Matches
+                        ORDER BY Match_ID DESC
+                        LIMIT 1; ";
+$last_match_ID = mysqli_query($conn, $get_last_match_ID_sql);
+$row_match = mysqli_fetch_assoc($last_match_ID);
+$new_user_match_ID = $row_match['Match_ID'] + 1;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_match']) && $is_commissioner) {
+    $team1_id = mysqli_real_escape_string($conn, $_POST['team1_id']);
+    $team2_id = mysqli_real_escape_string($conn, $_POST['team2_id']);
+    $match_date = mysqli_real_escape_string($conn, $_POST['match_date']);
+    $final_score = mysqli_real_escape_string($conn, $_POST['final_score']);
+    $winner = mysqli_real_escape_string($conn, $_POST['winner']);
+
+    // Validate that Team 1 and Team 2 are not the same
+    if ($team1_id === $team2_id) {
+        $message = "Error: Team 1 and Team 2 cannot be the same.";
+    } else {
+        // Check if both teams exist in the league
+        $team_check_query = "
+            SELECT Team_ID 
+            FROM Teams 
+            WHERE (Team_ID = '$team1_id' OR Team_ID = '$team2_id') AND League_ID = '$league_id';
+        ";
+        $team_check_result = mysqli_query($conn, $team_check_query);
+
+        if (mysqli_num_rows($team_check_result) === 2) { // Both teams must exist
+            $final_score = !empty($final_score) ? "'$final_score'" : "NULL";
+            $winner = !empty($winner) ? "'$winner'" : "NULL";
+
+            $insert_match_query = "
+                INSERT INTO Matches (Match_ID, Team1_ID, Team2_ID, MatchDate, FinalScore, Winner)
+                VALUES ('$new_user_match_ID', '$team1_id', '$team2_id', '$match_date', $final_score, $winner);
+            ";
+            if (mysqli_query($conn, $insert_match_query)) {
+                $message = "Match added successfully.";
+            } else {
+                $message = "Error adding match: " . mysqli_error($conn);
+            }
+        } else {
+            $message = "Error: One or both teams do not exist in the league.";
+        }
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -204,6 +250,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
                     <?php endif; ?>
                 </tbody>
             </table>
+            <h2>Add New Match</h2>
+                <form method="POST">
+                    <label for="team1_id">Team 1 ID:</label>
+                    <input type="number" id="team1_id" name="team1_id" required><br>
+
+                    <label for="team2_id">Team 2 ID:</label>
+                    <input type="number" id="team2_id" name="team2_id" required><br>
+
+                    <label for="match_date">Match Date:</label>
+                    <input type="date" id="match_date" name="match_date" required><br>
+
+                    <label for="final_score">Final Score:</label>
+                    <input type="text" id="final_score" name="final_score"><br>
+
+                    <label for="winner">Winner:</label>
+                    <input type="text" id="winner" name="winner"><br>
+
+                    <button type="submit" name="add_match" class="button">Add Match</button>
+                </form>
+
+
             <h2>Add New Team</h2>
             <form method="POST">
                 <label for="team_name">Team Name:</label>
@@ -212,7 +279,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
                 <label for="user_id">User ID:</label>
                 <input type="number" id="user_id" name="user_id" required><br>
 
-                <button type="submit" name="add_team">Add Team</button>
+                <button type="submit" name="add_team" class = "button">Add Team</button>
             </form>
         <?php endif; ?>
 
@@ -230,7 +297,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
 
-            <button type="submit" name="update_profile">Update Profile</button>
+            <button type="submit" name="update_profile" class = "button">Update Profile</button>
         </form>
     </div>
      <!-- SIDEBAR -->

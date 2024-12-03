@@ -18,7 +18,7 @@ $matches = mysqli_fetch_assoc($result);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>Matches</title>
 </head>
 <body>
     <div class = "general_container" style = "position: relative; margin-left: 200px; margin-top: 100px"> 
