@@ -24,8 +24,15 @@ if (mysqli_num_rows($result) === 1) {
         $_SESSION['User_ID'] = $row['User_ID']; // Store the user ID in session
         $_SESSION['Username'] = $row['User_username'];
         header("Location: ../web/LeagueSelectPage.php"); // Redirect to the league select page
+        exit(); 
+    } 
+    elseif ($row['User_username'] === $un && $row['User_password'] === $pass) { // *So old passwords can work*
+        $_SESSION['User_ID'] = $row['User_ID'];
+        $_SESSION['Username'] = $row['User_username'];
+        header("Location: ../web/LeagueSelectPage.php");
         exit();
-    } else {
+    }
+    else {
         echo "Incorrect username or password";
     }
 } else {
