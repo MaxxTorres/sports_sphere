@@ -212,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
                 <label for="user_id">User ID:</label>
                 <input type="number" id="user_id" name="user_id" required><br>
 
-                <button type="submit" name="add_team">Add Team</button>
+                <button type="submit" name="add_team" class = "button">Add Team</button>
             </form>
         <?php endif; ?>
 
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required><br>
 
-            <button type="submit" name="update_profile">Update Profile</button>
+            <button type="submit" name="update_profile" class = "button">Update Profile</button>
         </form>
     </div>
      <!-- SIDEBAR -->
