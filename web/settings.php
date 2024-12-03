@@ -29,16 +29,38 @@ $is_commissioner = $commissioner_row['League_commissioner'] == $user_id;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_user_id']) && $is_commissioner) {
     $delete_user_id = $_POST['delete_user_id'];
 
-    $delete_query = "
-        DELETE FROM Teams 
-        WHERE User_ID = '$delete_user_id' AND User_ID != '$user_id';
-    ";
+    $team_query = " SELECT Team_ID
+                    FROM Teams
+                    Where User_ID = '$delete_user_id' AND League_ID = '$league_id';";
+    $team_result = mysqli_query($conn, $team_query);
 
-    if (mysqli_query($conn, $delete_query)) {
-        $message = "Team deleted successfully.";
+
+    if ($team_result && mysqli_num_rows($team_result) > 0) {
+        $team_row = mysqli_fetch_assoc($team_result);
+        $team_id = $team_row['Team_ID'];
+
+        // Set Team_ID to NULL for all players on this team
+        $update_players_query = "
+            UPDATE Players 
+            SET Team_ID = NULL 
+            WHERE Team_ID = '$team_id';
+        ";
+        if (!mysqli_query($conn, $update_players_query)) {
+            $message = "Error updating players: " . mysqli_error($conn);
+        }
+        $delete_team_query = "
+            DELETE FROM Teams 
+            WHERE Team_ID = '$team_id';
+        ";
+        if (mysqli_query($conn, $delete_team_query)) {
+            $message = "Team deleted successfully.";
+        } else {
+            $message = "Error deleting user: " . mysqli_error($conn);
+        }
     } else {
-        $message = "Error deleting user: " . mysqli_error($conn);
+        $message = "Team not found for thatuser.";
     }
+
 }
 
 // Handle user profile update
@@ -73,6 +95,14 @@ if ($is_commissioner) {
     ";
     $users_result = mysqli_query($conn, $users_query);
 }
+// Generate User_ID
+$get_last_ID_sql = "SELECT Team_ID
+                        FROM Teams
+                        ORDER BY Team_ID DESC
+                        LIMIT 1; ";
+$last_ID = mysqli_query($conn, $get_last_ID_sql);
+$row = mysqli_fetch_assoc($last_ID);
+$new_user_ID = $row['Team_ID'] + 1;
 
 // Fetch current user's information for updating profile
 $user_query = "
@@ -82,6 +112,45 @@ $user_query = "
 ";
 $user_result = mysqli_query($conn, $user_query);
 $current_user = mysqli_fetch_assoc($user_result);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_team'])) {
+    $team_name = mysqli_real_escape_string($conn, $_POST['team_name']);
+    $team_user_id = mysqli_real_escape_string($conn, $_POST['user_id']);
+
+    // Check if the provided User_ID exists in User_table
+    $user_check_query = "
+        SELECT User_ID 
+        FROM User_table 
+        WHERE User_ID = '$team_user_id';
+    ";
+    $user_check_result = mysqli_query($conn, $user_check_query);
+
+    if (mysqli_num_rows($user_check_result) > 0) {
+        $league_user_check_query = "
+            SELECT User_ID 
+            FROM Teams 
+            WHERE User_ID = '$team_user_id' AND League_ID = '$league_id';
+        ";
+        $league_user_check_result = mysqli_query($conn, $league_user_check_query);
+        if (mysqli_num_rows($league_user_check_result) > 0) {
+            $message = "Error: The user is already part of this league.";
+        } else {
+            // Insert the new team
+            $insert_team_query = "
+                INSERT INTO Teams (Team_ID, Team_name, User_ID, League_ID, Team_total_points, Team_ranking, Team_status)
+                VALUES ('$new_user_ID', '$team_name', '$team_user_id', '$league_id', '0', '0', 'A' );
+            ";
+
+            if (mysqli_query($conn, $insert_team_query)) {
+                $message = "Team added successfully.";
+            } else {
+                $message = "Error adding team: " . mysqli_error($conn);
+            }
+        }
+    } else {
+        $message = "Error: The provided User_ID does not exist.";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -135,15 +204,25 @@ $current_user = mysqli_fetch_assoc($user_result);
                     <?php endif; ?>
                 </tbody>
             </table>
+            <h2>Add New Team</h2>
+            <form method="POST">
+                <label for="team_name">Team Name:</label>
+                <input type="text" id="team_name" name="team_name" required><br>
+
+                <label for="user_id">User ID:</label>
+                <input type="number" id="user_id" name="user_id" required><br>
+
+                <button type="submit" name="add_team">Add Team</button>
+            </form>
         <?php endif; ?>
 
         <h2>Update Profile</h2>
         <form method="POST">
-            <label for="fullname">Full Name:</label>
-            <input type="text" id="fullname" name="fullname" value="<?php echo htmlspecialchars($current_user['User_fullname']); ?>" required><br>
+            <label for="team_name">Full Name:</label>
+            <input type="text" id="team_name" name="team_name" value="<?php echo htmlspecialchars($current_user['User_fullname']); ?>" required><br>
 
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($current_user['User_username']); ?>" required><br>
+            <label for="user_id">Username:</label>
+            <input type="number" id="user_id" name="user_id" value="<?php echo htmlspecialchars($current_user['User_username']); ?>" required><br>
 
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($current_user['User_email']); ?>" required><br>
