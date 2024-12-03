@@ -2,6 +2,15 @@
 include "../php-backend/connect.php";
 session_start();
 
+// Check if the draft is completed
+$draft_status_query = "
+    SELECT DraftStatus 
+    FROM Draft 
+    WHERE League_ID = '" . $_SESSION['League_ID'] . "';
+";
+$draft_status_result = mysqli_query($conn, $draft_status_query);
+$draft_status = mysqli_fetch_assoc($draft_status_result);
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
     $player_id = (int) $_POST['player_id']; // Safely cast to an integer
@@ -66,37 +75,41 @@ $result = mysqli_query($conn, $query);
         <div class = "container_header">
             Available Players
         </div>
-        <table class="general_table">
-            <thead>
-                <tr>
-                    <th>Player Name</th>
-                    <th>Position</th>
-                    <th>Fantasy Points</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if ($result && mysqli_num_rows($result) > 0) {
-                    while ($player = mysqli_fetch_assoc($result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($player['Player_name']) . "</td>
-                                <td>" . htmlspecialchars($player['Player_position']) . "</td>
-                                <td>" . htmlspecialchars($player['Player_fantasy_points']) . "</td>
-                                <td>
-                                    <form action='' method='POST'>
-                                        <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
-                                        <button class='button' type='submit' >Sign</button>
-                                    </form>
-                                </td>
-                              </tr>";
+        <?php if (isset($draft_status['DraftStatus']) && $draft_status['DraftStatus'] === 'I'): ?>
+            <div> Draft is inprogess </div>
+        <?php else: ?>
+            <table class="general_table">
+                <thead>
+                    <tr>
+                        <th>Player Name</th>
+                        <th>Position</th>
+                        <th>Fantasy Points</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    if ($result && mysqli_num_rows($result) > 0) {
+                        while ($player = mysqli_fetch_assoc($result)) {
+                            echo "<tr>
+                                    <td>" . htmlspecialchars($player['Player_name']) . "</td>
+                                    <td>" . htmlspecialchars($player['Player_position']) . "</td>
+                                    <td>" . htmlspecialchars($player['Player_fantasy_points']) . "</td>
+                                    <td>
+                                        <form action='' method='POST'>
+                                            <input type='hidden' name='player_id' value='" . htmlspecialchars($player['Player_ID']) . "'>
+                                            <button class='button' type='submit' >Sign</button>
+                                        </form>
+                                    </td>
+                                </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='4'>No available players.</td></tr>";
                     }
-                } else {
-                    echo "<tr><td colspan='4'>No available players.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+                    ?>
+                </tbody>
+            </table>
+            <?php endif; ?>
     </div>
     
     
@@ -113,6 +126,7 @@ $result = mysqli_query($conn, $query);
         <div style = "margin: 5px; margin-left: 20px; font-size: 14px;">
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "../php-backend/logout.php">Log out</a>
             <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "LeagueSelectPage.php">League Select</a>
+            <a style = "padding: 5px; color: lightgrey; text-decoration: underline;" class = "side_bar_button" href = "settings.php">Settings</a>
         </div>
         <div style = "margin: 5px; margin-left: 10px; margin-top: 20px;">
             <a class = "side_bar_button" href = "LeagueStandingsPage.php">| League Standings</a>
