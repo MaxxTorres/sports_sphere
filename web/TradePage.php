@@ -42,37 +42,6 @@ $pending_trades_result = mysqli_query($conn, $pending_trades_query);
             Trade
         </div>
 
-        <!-- Player List -->
-        <table class="general_table">
-            <thead>
-                <tr>
-                    <th>Team Name</th>
-                    <th>Player Name</th>
-                    <th>Position</th>
-                    <th>Fantasy Points</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                if (mysqli_num_rows($result) > 0) {
-                    while ($row = mysqli_fetch_assoc($result)) {
-                        echo "<tr>
-                                <td>" . htmlspecialchars($row['Team_name']) . "</td>
-                                <td>" . htmlspecialchars($row['Player_name']) . "</td>
-                                <td>" . htmlspecialchars($row['Player_position']) . "</td>
-                                <td>" . htmlspecialchars($row['Player_fantasy_points']) . "</td>
-                                <td>
-                                    <a href='TradeConfirmation.php?player_id=" . htmlspecialchars($row['Player_ID']) . "' class='button'>Trade</a>
-                                </td>
-                              </tr>";
-                    }
-                } else {
-                    echo "<tr><td colspan='5'>No players available for trade.</td></tr>";
-                }
-                ?>
-            </tbody>
-        </table>
         <h2>Pending Trades</h2>
         <table class="general_table">
             <thead>
@@ -115,9 +84,39 @@ $pending_trades_result = mysqli_query($conn, $pending_trades_query);
             echo "<tr><td colspan='5'>No pending trades found.</td></tr>";
         }
         ?>
-    </tbody>
+         </tbody>
         </table>
-
+        <!-- Player List -->
+        <table class="general_table">
+            <thead>
+                <tr>
+                    <th>Team Name</th>
+                    <th>Player Name</th>
+                    <th>Position</th>
+                    <th>Fantasy Points</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if (mysqli_num_rows($result) > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<tr>
+                                <td>" . htmlspecialchars($row['Team_name']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_name']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_position']) . "</td>
+                                <td>" . htmlspecialchars($row['Player_fantasy_points']) . "</td>
+                                <td>
+                                    <a href='TradeConfirmation.php?player_id=" . htmlspecialchars($row['Player_ID']) . "' class='button'>Trade</a>
+                                </td>
+                              </tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='5'>No players available for trade.</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
        
     </div>
 

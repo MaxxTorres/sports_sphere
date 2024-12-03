@@ -2,7 +2,7 @@
 include "../php-backend/connect.php";
 session_start();
 
-$query = "SELECT Player_name, Player_position, Player_fantasy_points
+$query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
             FROM Teams t
             INNER JOIN User_table u ON u.User_ID = t.User_ID
             INNER JOIN Players p ON p.Team_ID = t.Team_ID
@@ -34,17 +34,23 @@ $result = mysqli_query($conn, $query);
                                 <th>Player Name</th>
                                 <th>Player Position</th>
                                 <th>Fantasy Points</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>";
             
                 // Loop through each row in the result set
                 while ($players = mysqli_fetch_assoc($result)) {
-                    // Output each player's data in a table row
                     echo "<tr>
                             <td>" . htmlspecialchars($players['Player_name']) . "</td>
                             <td>" . htmlspecialchars($players['Player_position']) . "</td>
                             <td>" . htmlspecialchars($players['Player_fantasy_points']) . "</td>
+                            <td> 
+                                <form method='POST' action='../php-backend/remove_player.php' style='display:inline;'>
+                                    <input id='p_id' name='p_id' value='" . $players['Player_ID'] . "' type='hidden'>
+                                    <button type='submit' onclick='return confirm(\"Are you sure you want to remove this player?\")' class='button'>Unsign</button>
+                                </form>
+                            </td>
                           </tr>";
                 }
             

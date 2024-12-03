@@ -21,7 +21,12 @@
             <a href = "../php-backend/league_select.php?league_name=MLS%20League">
                 <div><p>MLS League</p><img src = "./images/mls_logo.png"></div>
             </a>
+            
         </div>
+        <?php 
+                session_start();
+                echo "<div style='margin:10px; color: lightgrey;'>Logging in as " . $_SESSION['user_type'] . "</div>";
+        ?>
     </div>
 </body>
 </html>

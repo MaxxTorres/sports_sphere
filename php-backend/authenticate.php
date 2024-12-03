@@ -23,12 +23,25 @@ if (mysqli_num_rows($result) === 1) {
     if (password_verify($pass, $row['User_password'])) {
         $_SESSION['User_ID'] = $row['User_ID']; // Store the user ID in session
         $_SESSION['Username'] = $row['User_username'];
+
+        // Set database user type
+        if ($_SESSION['User_ID'] == 1002 || $_SESSION['User_ID'] == 1003 || $_SESSION['User_ID'] == 1002){
+            $_SESSION['user_type'] = 'admin';
+        } else {$_SESSION['user_type'] = 'player';}
+
         header("Location: ../web/LeagueSelectPage.php"); // Redirect to the league select page
         exit(); 
     } 
-    elseif ($row['User_username'] === $un && $row['User_password'] === $pass) { // *So old passwords can work*
+    // **So old unhashed passwords can work**
+    elseif ($row['User_username'] === $un && $row['User_password'] === $pass) { 
         $_SESSION['User_ID'] = $row['User_ID'];
         $_SESSION['Username'] = $row['User_username'];
+
+        // Set database user type
+        if ($_SESSION['User_ID'] == 1001 || $_SESSION['User_ID'] == 1003 || $_SESSION['User_ID'] == 1002){
+            $_SESSION['user_type'] = 'admin';
+        } else {$_SESSION['user_type'] = 'player';}
+
         header("Location: ../web/LeagueSelectPage.php");
         exit();
     }
