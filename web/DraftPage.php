@@ -16,12 +16,10 @@ $draft_status = mysqli_fetch_assoc($draft_status_result);
 
 $query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
             FROM Players p
-            WHERE p.Player_availability = 'A';";
+            WHERE p.Team_ID IS NULL AND p.Player_availability = 'A' AND p.League_ID = '" . $_SESSION['League_ID'] . "';";
             
 
 $result = mysqli_query($conn, $query);
-$players = mysqli_fetch_assoc($result);
-
 
 ?>
 

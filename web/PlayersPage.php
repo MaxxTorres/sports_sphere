@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
 
 $query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
             FROM Players p
-            WHERE p.Team_ID IS NULL AND p.League_ID = '" . $_SESSION['League_ID'] . "';";
+            WHERE p.Team_ID IS NULL AND p.Player_availability = 'A' AND p.League_ID = '" . $_SESSION['League_ID'] . "';";
 
 $result = mysqli_query($conn, $query);
 ?>
