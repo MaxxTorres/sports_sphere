@@ -37,18 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])) {
     }
 }}
 
-
-
-
 $query = "SELECT Player_ID, Player_name, Player_position, Player_fantasy_points
             FROM Players p
-            WHERE p.Team_ID IS NULL;";
-            
+            WHERE p.Team_ID IS NULL AND p.League_ID = '" . $_SESSION['League_ID'] . "';";
 
 $result = mysqli_query($conn, $query);
-$players = mysqli_fetch_assoc($result);
-
-
 ?>
 
 <!DOCTYPE html>
@@ -66,10 +59,13 @@ $players = mysqli_fetch_assoc($result);
             echo 
             "
             <div class = 'general_container' style = 'position: relative; margin-left: 200px; margin-top: 50px'>
-                <div class = 'container_header'>
-                    Add Player
-                </div>
-                form
+                <div class = 'container_header'>Add Player</div>
+                    <form action='../php-backend/add_player.php' method='post' autocomplete='off' style = 'margin: 20px;'>     
+                        Player name: <input type='text' id='p_name' name='p_name' required> <br>
+                        Player position (1-3 letters): <input type='text' id='p_pos' name='p_pos' required> <br>
+                        Real Team: <input type='text' id='p_team' name='p_team' required> <br>
+                        <input type='submit' 'value='Add' class='button' style='margin-left: 0px; width: 100%;'>
+                    </form>
             </div>
             ";
         }

@@ -8,7 +8,6 @@ $query = "SELECT Team_name, Team_total_points
             ORDER BY Team_total_points DESC;";
 
 $result = mysqli_query($conn, $query);
-$teams = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
@@ -37,10 +36,10 @@ $teams = mysqli_fetch_assoc($result);
                         </thead>
                         <tbody>";
 
-                while ($teams = mysqli_fetch_assoc($result)) {
+                while ($team = mysqli_fetch_assoc($result)) {
                     echo "<tr>
-                            <td>" . htmlspecialchars($teams['Team_name']) . "</td>
-                            <td>" . htmlspecialchars($teams['Team_total_points']) . "</td>
+                            <td>" . htmlspecialchars($team['Team_name']) . "</td>
+                            <td>" . htmlspecialchars($team['Team_total_points']) . "</td>
                           </tr>";
                 }
                 

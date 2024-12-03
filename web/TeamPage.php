@@ -10,7 +10,6 @@ $query = "SELECT Player_name, Player_position, Player_fantasy_points
             AND t.League_ID = '" . $_SESSION['League_ID'] . "';";
 
 $result = mysqli_query($conn, $query);
-$players = mysqli_fetch_assoc($result);
 ?>
 
 <!DOCTYPE html>
