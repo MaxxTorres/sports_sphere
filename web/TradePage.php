@@ -21,7 +21,7 @@ $pending_trades_query = "
     INNER JOIN Teams ot ON op.Team_ID = ot.Team_ID
     INNER JOIN Teams tt ON tp.Team_ID = tt.Team_ID
     WHERE (pt.offering_user_id = '" . $_SESSION['User_ID'] . "' OR pt.target_user_id = '" . $_SESSION['User_ID'] . "')
-      AND pt.status = 'Pending';
+      AND pt.status = 'Pending' AND op.League_ID = '" . $_SESSION['League_ID'] . "' AND tp.League_ID = '" . $_SESSION['League_ID'] . "';
 ";
 $pending_trades_result = mysqli_query($conn, $pending_trades_query);
 
@@ -34,7 +34,7 @@ $pending_trades_result = mysqli_query($conn, $pending_trades_query);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>NFL League</title>
+    <title>Trades</title>
 </head>
 <body>
     <div class="general_container" style="position: relative; margin-left: 200px; margin-top: 100px"> 
