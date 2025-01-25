@@ -1,4 +1,4 @@
-**Setup instructions: **
+**Setup Instructions: **
 1. Ensure that XAMPP is installed
 2. Download the app folder
 3. Put folder in htdocs of xampp directory
