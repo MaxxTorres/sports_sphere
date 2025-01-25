@@ -7,3 +7,7 @@
 
 **Note:**
 The IP address of the AWS instance may change if the server is restarted. This would then need to be changed in the connect.php file. We will try to keep the server running continuously for testing purposes, otherwise it may eventually shutdown.
+
+**App Home Screen Sample**
+
+![sports_sphere](https://github.com/user-attachments/assets/3672c59b-5e23-4e46-bb49-d297ca8f36dc)
